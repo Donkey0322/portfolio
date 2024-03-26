@@ -4,6 +4,7 @@ const { resolve } = require("node:path");
 const dotEnvFileMap = {
   development: "development",
   production: "production",
+  staging: "staging",
 };
 
 /** @type {(NODE_ENV:"development" | "production") => void} */

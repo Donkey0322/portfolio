@@ -5,6 +5,8 @@ var ls;
 
 if (process.argv.includes("-p")) {
   loadEnv("production");
+} else if (process.argv.includes("-s")) {
+  loadEnv("staging");
 } else {
   loadEnv("development");
 }
