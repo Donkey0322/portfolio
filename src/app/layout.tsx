@@ -1,5 +1,5 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { Contrail_One } from "next/font/google";
+import { Contrail_One, Poppins } from "next/font/google";
 
 import type { Metadata } from "next";
 
@@ -14,6 +14,13 @@ const font = Contrail_One({
   subsets: ["latin"],
 });
 
+const poppins = Poppins({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-poppins",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+
 export const metadata: Metadata = {
   title: "Donkey Portfolio",
   description: "The application built in Next for Donkey Lee's Portfolio",
@@ -26,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={font.variable}>
+      <body className={`${font.variable} ${poppins.variable}`}>
         <StyledComponentsRegistry>
           <AntdRegistry>
             <ThemeProvider>{children}</ThemeProvider>
