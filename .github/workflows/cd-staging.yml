@@ -1,4 +1,4 @@
-name: GitHub Actions Vercel Production Deployment
+name: GitHub Actions Vercel Staging Deployment
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -11,7 +11,7 @@ on:
       - develop
 
 jobs:
-  Deploy-Production:
+  Deploy-Staging:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
