@@ -11,15 +11,18 @@
     "commit": "./scripts/commit/commit.sh"
   },
   "dependencies": {
+    "@ant-design/nextjs-registry": "^1.0.2",
     "next": "^15.0.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "styled-components": "^5.3.11"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.0.3",
     "@types/node": "^22.9.3",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@types/styled-components": "^5.1.34",
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0",
     "child_process": "^1.0.2",
@@ -32,6 +35,9 @@
     "typescript": "^5.7.2",
     "vercel": "^39.1.1",
     "webpack": "^5.96.1"
+  },
+  "resolutions": {
+    "styled-components": "^5"
   },
   "packageManager": "pnpm@9.14.2+sha512.6e2baf77d06b9362294152c851c4f278ede37ab1eba3a55fda317a4a17b209f4dbb973fb250a77abc463a341fcb1f17f17cfa24091c4eb319cda0d9b84278387"
 }
