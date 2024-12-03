@@ -1,9 +1,11 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { Analytics } from "@vercel/analytics/next";
 import { Contrail_One, Poppins } from "next/font/google";
 
 import type { Metadata } from "next";
 
 import StyledComponentsRegistry from "@/libs/styled-components";
+import AntdProvider from "@/providers/antd/config";
 import ThemeProvider from "@/providers/theme";
 
 import "@/app/globals.css";
@@ -36,9 +38,12 @@ export default function RootLayout({
       <body className={`${font.variable} ${poppins.variable}`}>
         <StyledComponentsRegistry>
           <AntdRegistry>
-            <ThemeProvider>{children}</ThemeProvider>
+            <ThemeProvider>
+              <AntdProvider>{children}</AntdProvider>
+            </ThemeProvider>
           </AntdRegistry>
         </StyledComponentsRegistry>
+        <Analytics />
       </body>
     </html>
   );
