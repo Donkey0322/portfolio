@@ -2,16 +2,26 @@
 
 import { Tabs } from "antd";
 import Image from "next/image";
+import { useState } from "react";
 import styled from "styled-components";
 
 import type { TabsProps } from "antd";
 
 import Background from "@/assets/images/background.png";
+import Me2 from "@/assets/images/me2.png";
 import Me from "@/assets/images/me3.png";
 
 const HeaderContainer = styled.div`
   padding: 1% 4% 4%;
   background-color: ${(props) => props.theme.pink[100]};
+  .ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical {
+    max-height: 50vh;
+    overflow: scroll;
+  }
+
+  .ant-tabs-nav-wrap {
+    justify-content: flex-end !important; /* 标签右对齐 */
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -83,11 +93,20 @@ const items: TabsProps["items"] = [
   },
   {
     key: "3",
-    label: "Github",
+    label: (
+      <a
+        href="https://github.com/Donkey0322"
+        target="_blank"
+        style={{ color: "inherit", transition: "none" }}
+      >
+        Github
+      </a>
+    ),
   },
 ];
 
 export default function Intro() {
+  const [hover, setHover] = useState(false);
   return (
     <>
       <HeaderContainer className="header">
@@ -96,7 +115,6 @@ export default function Intro() {
           items={items}
           onChange={onChange}
           tabPosition="top"
-          style={{}}
         />
       </HeaderContainer>
       <ContentContainer>
@@ -111,7 +129,21 @@ export default function Intro() {
           </SubTitle>
         </TextContainer>
         <div style={{ position: "relative" }}>
-          <Figure src={Me} alt={"me"} height={300} />
+          {hover ? (
+            <Figure
+              src={Me2}
+              alt={"me"}
+              height={350}
+              onMouseLeave={() => setHover(false)}
+            />
+          ) : (
+            <Figure
+              src={Me}
+              alt={"me"}
+              height={300}
+              onMouseEnter={() => setHover(true)}
+            />
+          )}
           <Image src={Background} alt={"background"} width={300} />
         </div>
       </ContentContainer>

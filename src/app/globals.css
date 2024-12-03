@@ -101,11 +101,3 @@ a {
     color-scheme: dark;
   }
 }
-.ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical {
-  max-height: 50vh;
-  overflow: scroll;
-}
-
-.ant-tabs-nav-wrap {
-  justify-content: flex-end !important; /* 标签右对齐 */
-}

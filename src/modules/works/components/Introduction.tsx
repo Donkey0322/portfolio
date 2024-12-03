@@ -32,7 +32,7 @@ const Content = styled.div`
   font-size: 20px;
   font-family: "Poppins", sans-serif;
   font-weight: 400;
-  width: 100%;
+  width: 60%;
   color: ${({ theme }) => theme.white};
 `;
 
