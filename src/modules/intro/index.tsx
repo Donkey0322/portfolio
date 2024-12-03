@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import styled from "styled-components";
+import { useParams, useRouter } from "next/navigation";
 
 import type { TabsProps } from "antd";
 
@@ -18,6 +19,12 @@ import Work from "@/assets/icons/Work";
 import Background from "@/assets/images/background.png";
 import Me2 from "@/assets/images/me2.png";
 import Me from "@/assets/images/me3.png";
+import { rwdFontSize } from "@/utils/css";
+import { fadeIn } from "@/utils/css/styled-components";
+import { MOBILE_WITH } from "@/constants/rwd";
+import Github from "@/assets/icons/Github";
+import Work from "@/assets/icons/Work";
+import Resume from "@/assets/icons/Resume";
 
 const HeaderContainer = styled.div`
   padding: 1% 4% 4%;
