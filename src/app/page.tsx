@@ -1,13 +1,5 @@
-import Intro from "@/modules/intro";
-import Resume from "@/modules/resume";
-import Works from "@/modules/works";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <>
-      <Intro />
-      <Works />
-      <Resume />
-    </>
-  );
+export default async function Redirect() {
+  redirect("/work");
 }

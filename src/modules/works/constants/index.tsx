@@ -68,7 +68,7 @@ export const projects: ProjectProps[] = [
       height: "75%",
     },
     content: "Want to find a partner for badminton? Jöinee, go on a journey!",
-    href: "https://joinee-ee017.web.app/entry",
+    href: "https://come-buy.vercel.app/",
     logo: <Image src={ComebuyLogo} alt="Comebuy logo" width={50} height={50} />,
     tags: ["Web", "Typescript", "Vite", "Google Map API"],
     title: "Comebuy",

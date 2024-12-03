@@ -26,6 +26,11 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Donkey Portfolio",
   description: "The application built in Next for Donkey Lee's Portfolio",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
