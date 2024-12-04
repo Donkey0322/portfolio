@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
+import styled from "styled-components";
 
 import type { PDFDocumentProxy } from "pdfjs-dist";
 
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
-// import "@/modules/resume/Sample.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
@@ -19,9 +19,13 @@ const options = {
   standardFontDataUrl: "/standard_fonts/",
 };
 
-// const maxWidth = 800;
-
-// type PDFFile = string | File | null;
+const ResumeContainer = styled.div`
+  width: "100%";
+  canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+`;
 
 export default function Sample() {
   const [numPages, setNumPages] = useState<number>();
@@ -33,16 +37,16 @@ export default function Sample() {
   }
 
   return (
-    <div style={{ width: "500px" }}>
+    <ResumeContainer>
       <Document
-        file="./Resume 2.pdf"
+        file="/Résumé v-icon.pdf"
         onLoadSuccess={onDocumentLoadSuccess}
         options={options}
       >
         {Array.from(new Array(numPages), (_el, index) => (
-          <Page key={`page_${index + 1}`} pageNumber={index + 1} width={500} />
+          <Page key={`page_${index + 1}`} pageNumber={index + 1} />
         ))}
       </Document>
-    </div>
+    </ResumeContainer>
   );
 }

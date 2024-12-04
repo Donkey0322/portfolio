@@ -8,16 +8,27 @@ import JoineeLogo from "@/assets/icons/Logo";
 import ComebuyBackground from "@/assets/images/comebuy background.png";
 import ComebuyLogo from "@/assets/images/comebuy logo.png";
 import JoineeBackground from "@/assets/images/joinee background.png";
-import LogoshotBackground from "@/assets/images/logoshot background.png";
 import LogoshotLogo from "@/assets/images/logoshot logo.png";
+
+interface ImageSource {
+  backgroundType: "image";
+  backgroundSource: StaticImageData;
+}
+
+interface VideoSource {
+  backgroundType: "video";
+  backgroundSource: string;
+}
+
+type Source = VideoSource | ImageSource;
 
 interface ProjectProps {
   backgroundColor: HEX;
-  backgroundImage: StaticImageData;
   backgroundImageStyle?: CSSProperties;
   content: string;
   href: string;
   logo: JSX.Element;
+  source: Source;
   tags: string[];
   title: string;
 }
@@ -25,24 +36,26 @@ interface ProjectProps {
 export const projects: ProjectProps[] = [
   {
     backgroundColor: "#44279f",
-    backgroundImage: JoineeBackground,
+    backgroundImageStyle: {
+      aspectRatio: `${JoineeBackground.width} / ${JoineeBackground.height}`,
+    },
     content: "Want to find a partner for badminton? Jöinee, go on a journey!",
     href: "https://joinee-ee017.web.app/entry",
     logo: <JoineeLogo fontSize={50} />,
+    source: { backgroundSource: JoineeBackground, backgroundType: "image" },
     tags: ["Web", "Typescript", "Vite", "Google Map API"],
     title: "Jöinee",
   },
   {
     backgroundColor: "#2c7594",
-    backgroundImage: LogoshotBackground,
     backgroundImageStyle: {
-      transform: "translateX(25%)",
       bottom: 0,
       height: "75%",
       borderLeft: "white solid 10px",
       borderTop: "white solid 10px",
       borderRadius: 0,
       borderTopLeftRadius: 10,
+      aspectRatio: `16 / 9`,
     },
     content:
       "Spot trademarks instantly, protect your ideas, and unleash creativity with lightning-fast, AI-powered trademark recognition!",
@@ -56,19 +69,21 @@ export const projects: ProjectProps[] = [
         style={{ borderRadius: "10px" }}
       />
     ),
+    source: { backgroundSource: "logoshot.mp4", backgroundType: "video" },
     tags: ["Mobile", "React Native", "Expo SDK"],
     title: "Logoshot",
   },
   {
     backgroundColor: "#A00F16",
-    backgroundImage: ComebuyBackground,
     backgroundImageStyle: {
       right: 10,
       bottom: 10,
       height: "75%",
+      aspectRatio: `${ComebuyBackground.width} / ${ComebuyBackground.height}`,
     },
     content: "Want to find a partner for badminton? Jöinee, go on a journey!",
     href: "https://come-buy.vercel.app/",
+    source: { backgroundSource: ComebuyBackground, backgroundType: "image" },
     logo: <Image src={ComebuyLogo} alt="Comebuy logo" width={50} height={50} />,
     tags: ["Web", "Typescript", "Vite", "Google Map API"],
     title: "Comebuy",

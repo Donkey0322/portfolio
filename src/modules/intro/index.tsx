@@ -81,16 +81,20 @@ const ContentLink = styled.a`
   display: inline;
 
   &::after {
-    display: inline;
     content: "";
-    border-bottom: solid 3px #222;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background-color: ${({ theme }) => theme.maillard[900]};
+    transition: transform 0.3s ease;
+    width: 100%;
     transform: scaleX(0);
-    transition: transform 250ms ease-in-out;
-    position: relative;
-    top: -3px;
   }
 
   &:hover::after {
+    width: 100%;
     transform: scaleX(1);
     transform-origin: 0% 50%;
   }
@@ -176,7 +180,7 @@ export default function Intro() {
           items={items}
           tabPosition="top"
           onChange={(key) => {
-            router.replace(key);
+            router.push(`${key}`, { scroll: true });
           }}
         />
       </HeaderContainer>
@@ -188,12 +192,24 @@ export default function Intro() {
           </Title>
           <SubTitle>
             <span>Currently interning as a Frontend Software Engineer at </span>
-            <ContentLink>Appier Inc.</ContentLink>
+            <ContentLink href="https://www.appier.com/en/" target="_blank">
+              Appier Inc.
+            </ContentLink>
             <span>
               , optimizing CI processes and enhancing system reliability.
-              Previously worked at Crescendo Lab Ltd., NTU Office of Academic
-              Affairs, and led software projects like Jöinee and Logoshot.
+              Previously worked at{" "}
             </span>
+            <ContentLink href="https://www.cresclab.com/en" target="_blank">
+              Crescendo Lab Ltd.
+            </ContentLink>
+            <span>, </span>
+            <ContentLink
+              href="https://www.aca.ntu.edu.tw/w/acaEN/Index"
+              target="_blank"
+            >
+              NTU Office of Academic Affairs
+            </ContentLink>
+            <span>, and led software projects like Jöinee and Logoshot. </span>
           </SubTitle>
         </TextContainer>
         <FigureContainer>

@@ -3,23 +3,9 @@
 import Image from "next/image";
 import styled from "styled-components";
 
+import { Video } from "@/components/Video";
 import Introduction from "@/modules/works/components/Introduction";
 import { projects } from "@/modules/works/constants";
-
-const WorksContainer = styled.div`
-  padding: 5% 15% 8%;
-  display: flex;
-  flex-direction: column;
-  row-gap: 30px;
-`;
-
-const Title = styled.div`
-  font-family: "Poppins", serif;
-  font-weight: 600;
-  font-size: 28px;
-  border-bottom: ${(props) => props.theme.maillard[900]} 5px solid;
-  margin-bottom: 30px;
-`;
 
 const WorkContainer = styled.a<{ backgroundColor?: string }>`
   border-radius: 12px;
@@ -38,9 +24,7 @@ const WorkContainer = styled.a<{ backgroundColor?: string }>`
   }
 `;
 
-const BackgroundWrapper = styled.div<{
-  ratio: string;
-}>`
+const BackgroundWrapper = styled.div`
   border-radius: 13.5px;
   position: absolute;
   right: 0;
@@ -50,24 +34,22 @@ const BackgroundWrapper = styled.div<{
   justify-content: flex-end;
   align-items: center;
   height: 100%;
-  aspect-ratio: ${({ ratio }) => ratio};
 `;
 
 export default function Works() {
   return (
-    <WorksContainer>
-      <Title>Projects</Title>
+    <>
       {projects.map(
         (
           {
-            logo,
-            title,
-            content,
-            tags,
-            href,
             backgroundColor,
-            backgroundImage,
             backgroundImageStyle,
+            content,
+            href,
+            logo,
+            source: { backgroundSource, backgroundType },
+            tags,
+            title,
           },
           index
         ) => (
@@ -77,15 +59,19 @@ export default function Works() {
             target="_blank"
             backgroundColor={backgroundColor}
           >
-            <BackgroundWrapper
-              ratio={`${backgroundImage.width} / ${backgroundImage.height}`}
-              style={backgroundImageStyle}
-            >
-              <Image
-                src={backgroundImage}
-                alt={`$${title} Background`}
-                style={{ height: "102%" }}
-              />
+            <BackgroundWrapper style={backgroundImageStyle}>
+              {backgroundType === "video" ? (
+                <Video
+                  style={{ width: "100%", height: "100%", scale: 1.02 }}
+                  src={backgroundSource}
+                />
+              ) : (
+                <Image
+                  src={backgroundSource}
+                  alt={`$${title} Background`}
+                  style={{ height: "102%" }}
+                />
+              )}
             </BackgroundWrapper>
             <Introduction
               logo={logo}
@@ -96,6 +82,6 @@ export default function Works() {
           </WorkContainer>
         )
       )}
-    </WorksContainer>
+    </>
   );
 }
