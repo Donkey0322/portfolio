@@ -10,3 +10,12 @@ export const fadeIn = keyframes`
     opacity: 1
   }
 `;
+
+export const expand = keyframes`
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+`;
