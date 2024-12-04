@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default async function Redirect() {
+export default function Redirect() {
   redirect("/work");
 }

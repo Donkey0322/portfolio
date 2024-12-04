@@ -5,6 +5,7 @@ import { Contrail_One, Poppins } from "next/font/google";
 import type { Metadata } from "next";
 
 import StyledComponentsRegistry from "@/libs/styled-components";
+import Intro from "@/modules/intro";
 import AntdProvider from "@/providers/antd/config";
 import ThemeProvider from "@/providers/theme";
 
@@ -44,7 +45,10 @@ export default function RootLayout({
         <StyledComponentsRegistry>
           <AntdRegistry>
             <ThemeProvider>
-              <AntdProvider>{children}</AntdProvider>
+              <AntdProvider>
+                <Intro />
+                {children}
+              </AntdProvider>
             </ThemeProvider>
           </AntdRegistry>
         </StyledComponentsRegistry>

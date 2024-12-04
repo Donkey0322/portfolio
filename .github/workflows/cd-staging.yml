@@ -36,5 +36,5 @@ jobs:
 
       - name: Deploy Project Artifacts to Vercel
         run: |
-          url="$(vercel deploy --prebuilt --token=${{ env.VERCEL_TOKEN }})"
+          url="$(vercel deploy --force --prebuilt --token=${{ env.VERCEL_TOKEN }})"
           vercel alias --token=${{ env.VERCEL_TOKEN }} set "$url" donkey-portfolio-staging.vercel.app

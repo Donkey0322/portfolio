@@ -2,21 +2,22 @@
 
 import { Tabs } from "antd";
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import styled from "styled-components";
-import { useParams, useRouter } from "next/navigation";
 
 import type { TabsProps } from "antd";
 
+import { MOBILE_WITH } from "@/constants/rwd";
+import { rwdFontSize } from "@/utils/css";
+import { fadeIn } from "@/utils/css/styled-components";
+
+import Github from "@/assets/icons/Github";
+import Resume from "@/assets/icons/Resume";
+import Work from "@/assets/icons/Work";
 import Background from "@/assets/images/background.png";
 import Me2 from "@/assets/images/me2.png";
 import Me from "@/assets/images/me3.png";
-import { rwdFontSize } from "@/utils/css";
-import { fadeIn } from "@/utils/css/styled-components";
-import { MOBILE_WITH } from "@/constants/rwd";
-import Github from "@/assets/icons/Github";
-import Work from "@/assets/icons/Work";
-import Resume from "@/assets/icons/Resume";
 
 const HeaderContainer = styled.div`
   padding: 1% 4% 4%;
@@ -61,8 +62,6 @@ const SubTitle = styled.div`
   ${rwdFontSize(18)}
   padding: 5% 0;
   line-height: 150%;
-  display: flex;
-  flex-wrap: wrap;
   color: #555;
   font-weight: 500;
   font-family: "Poppins", sans-serif;
@@ -71,6 +70,29 @@ const SubTitle = styled.div`
   animation: ${fadeIn} 1.2s 0.45s 1 both ease-in-out;
   @media (max-width: ${MOBILE_WITH}px) {
     animation: ${fadeIn} 1.2s 0.9s 1 both ease-in-out;
+  }
+`;
+
+const ContentLink = styled.a`
+  font-weight: 600;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  display: inline;
+
+  &::after {
+    display: inline;
+    content: "";
+    border-bottom: solid 3px #222;
+    transform: scaleX(0);
+    transition: transform 250ms ease-in-out;
+    position: relative;
+    top: -3px;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+    transform-origin: 0% 50%;
   }
 `;
 
@@ -143,16 +165,14 @@ const items: TabsProps["items"] = [
 
 export default function Intro() {
   const [hover, setHover] = useState(false);
-  const {
-    type: [value],
-  } = useParams<{ type: string[] }>();
+  const { type } = useParams<{ type: string[] }>();
   const router = useRouter();
-  console.log(value);
+
   return (
     <>
       <HeaderContainer className="header">
         <Tabs
-          activeKey={value}
+          activeKey={type?.[0]}
           items={items}
           tabPosition="top"
           onChange={(key) => {
@@ -167,10 +187,13 @@ export default function Intro() {
             <br />A frontend engineer.
           </Title>
           <SubTitle>
-            Currently interning as a Frontend Software Engineer at Appier Inc.,
-            optimizing CI processes and enhancing system reliability. Previously
-            worked at Crescendo Lab Ltd., NTU Office of Academic Affairs, and
-            led software projects like Jöinee and Logoshot.
+            <span>Currently interning as a Frontend Software Engineer at </span>
+            <ContentLink>Appier Inc.</ContentLink>
+            <span>
+              , optimizing CI processes and enhancing system reliability.
+              Previously worked at Crescendo Lab Ltd., NTU Office of Academic
+              Affairs, and led software projects like Jöinee and Logoshot.
+            </span>
           </SubTitle>
         </TextContainer>
         <FigureContainer>
