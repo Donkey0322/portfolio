@@ -5,6 +5,7 @@ import { Contrail_One, Poppins } from "next/font/google";
 import type { Metadata } from "next";
 
 import StyledComponentsRegistry from "@/libs/styled-components";
+import Intro from "@/modules/intro";
 import AntdProvider from "@/providers/antd/config";
 import ThemeProvider from "@/providers/theme";
 
@@ -26,6 +27,11 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Donkey Portfolio",
   description: "The application built in Next for Donkey Lee's Portfolio",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
@@ -39,7 +45,10 @@ export default function RootLayout({
         <StyledComponentsRegistry>
           <AntdRegistry>
             <ThemeProvider>
-              <AntdProvider>{children}</AntdProvider>
+              <AntdProvider>
+                <Intro />
+                {children}
+              </AntdProvider>
             </ThemeProvider>
           </AntdRegistry>
         </StyledComponentsRegistry>

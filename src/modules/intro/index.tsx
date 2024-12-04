@@ -2,11 +2,19 @@
 
 import { Tabs } from "antd";
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import styled from "styled-components";
 
 import type { TabsProps } from "antd";
 
+import { MOBILE_WITH } from "@/constants/rwd";
+import { rwdFontSize } from "@/utils/css";
+import { fadeIn } from "@/utils/css/styled-components";
+
+import Github from "@/assets/icons/Github";
+import Resume from "@/assets/icons/Resume";
+import Work from "@/assets/icons/Work";
 import Background from "@/assets/images/background.png";
 import Me2 from "@/assets/images/me2.png";
 import Me from "@/assets/images/me3.png";
@@ -26,9 +34,11 @@ const HeaderContainer = styled.div`
 
 const ContentContainer = styled.div`
   padding: 0% 15% 8%;
+  gap: 10px;
   background-color: ${(props) => props.theme.pink[100]};
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  flex-wrap: wrap-reverse;
   align-items: center;
 `;
 
@@ -38,22 +48,60 @@ const TextContainer = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 3.6vw;
+  ${rwdFontSize(45)}
   line-height: 120%;
   font-weight: 900;
   font-family: "Playfair Display", serif;
-  animation: loading 1.2s 0s 1 both ease-in-out;
+  animation: ${fadeIn} 1.2s 0s 1 both ease-in-out;
+  @media (max-width: ${MOBILE_WITH}px) {
+    animation: ${fadeIn} 1.2s 0.45s 1 both ease-in-out;
+  }
 `;
 
 const SubTitle = styled.div`
+  ${rwdFontSize(18)}
   padding: 5% 0;
   line-height: 150%;
-  display: flex;
-  flex-wrap: wrap;
   color: #555;
   font-weight: 500;
   font-family: "Poppins", sans-serif;
-  max-width: 350px;
+  max-width: 400px;
+  text-align: justify;
+  animation: ${fadeIn} 1.2s 0.45s 1 both ease-in-out;
+  @media (max-width: ${MOBILE_WITH}px) {
+    animation: ${fadeIn} 1.2s 0.9s 1 both ease-in-out;
+  }
+`;
+
+const ContentLink = styled.a`
+  font-weight: 600;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  display: inline;
+
+  &::after {
+    display: inline;
+    content: "";
+    border-bottom: solid 3px #222;
+    transform: scaleX(0);
+    transition: transform 250ms ease-in-out;
+    position: relative;
+    top: -3px;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+    transform-origin: 0% 50%;
+  }
+`;
+
+const FigureContainer = styled.div`
+  position: relative;
+  animation: ${fadeIn} 1.2s 0.9s 1 both ease-in-out;
+  @media (max-width: ${MOBILE_WITH}px) {
+    animation: ${fadeIn} 1.2s 0s 1 both ease-in-out;
+  }
 `;
 
 const Figure = styled(Image)`
@@ -61,10 +109,8 @@ const Figure = styled(Image)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  /* 動畫設置 */
   animation: float 6s infinite ease-in-out;
 
-  /* 定義上下飄移的動畫 */
   @keyframes float {
     0% {
       transform: translate(-50%, -60%); /* 初始位置 */
@@ -78,43 +124,60 @@ const Figure = styled(Image)`
   }
 `;
 
-const onChange = (key: string) => {
-  console.log(key);
-};
+const Label = styled.a`
+  ${rwdFontSize(17)}
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit !important;
+  transition: none !important;
+`;
 
 const items: TabsProps["items"] = [
   {
-    key: "1",
-    label: "Work",
-  },
-  {
-    key: "2",
-    label: "Résumé",
-  },
-  {
-    key: "3",
+    key: "work",
     label: (
-      <a
-        href="https://github.com/Donkey0322"
-        target="_blank"
-        style={{ color: "inherit", transition: "none" }}
-      >
+      <Label>
+        <Work></Work>
+        Work
+      </Label>
+    ),
+  },
+  {
+    key: "resume",
+    label: (
+      <Label>
+        <Resume></Resume>
+        Résumé
+      </Label>
+    ),
+  },
+  {
+    key: "github",
+    label: (
+      <Label href="https://github.com/Donkey0322" target="_blank">
+        <Github />
         Github
-      </a>
+      </Label>
     ),
   },
 ];
 
 export default function Intro() {
   const [hover, setHover] = useState(false);
+  const { type } = useParams<{ type: string[] }>();
+  const router = useRouter();
+
   return (
     <>
       <HeaderContainer className="header">
         <Tabs
-          defaultActiveKey="1"
+          activeKey={type?.[0]}
           items={items}
-          onChange={onChange}
           tabPosition="top"
+          onChange={(key) => {
+            router.replace(key);
+          }}
         />
       </HeaderContainer>
       <ContentContainer>
@@ -124,11 +187,16 @@ export default function Intro() {
             <br />A frontend engineer.
           </Title>
           <SubTitle>
-            Currently working on next-gen finance products at Oracle Design .
-            Previously worked at Google Assistant , NYU IT and Backer-Founder .
+            <span>Currently interning as a Frontend Software Engineer at </span>
+            <ContentLink>Appier Inc.</ContentLink>
+            <span>
+              , optimizing CI processes and enhancing system reliability.
+              Previously worked at Crescendo Lab Ltd., NTU Office of Academic
+              Affairs, and led software projects like Jöinee and Logoshot.
+            </span>
           </SubTitle>
         </TextContainer>
-        <div style={{ position: "relative" }}>
+        <FigureContainer>
           {hover ? (
             <Figure
               src={Me2}
@@ -145,7 +213,7 @@ export default function Intro() {
             />
           )}
           <Image src={Background} alt={"background"} width={300} />
-        </div>
+        </FigureContainer>
       </ContentContainer>
     </>
   );
