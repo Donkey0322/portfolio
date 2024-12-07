@@ -39,7 +39,7 @@ const Content = styled.div`
 const TagsContainer = styled.div`
   display: flex;
   gap: 8px 8px;
-  max-width: 60%;
+  max-width: 50%;
   margin-top: 50px;
   flex-wrap: wrap;
 `;
