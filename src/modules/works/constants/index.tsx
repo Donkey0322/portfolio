@@ -43,7 +43,7 @@ export const projects: ProjectProps[] = [
     href: "https://joinee-ee017.web.app/entry",
     logo: <JoineeLogo fontSize={50} />,
     source: { backgroundSource: JoineeBackground, backgroundType: "image" },
-    tags: ["Web", "Typescript", "Vite", "Google Map API"],
+    tags: ["Web", "TypeScripts", "Vite", "Google Map API", "Framer Motion"],
     title: "Jöinee",
   },
   {
@@ -70,7 +70,7 @@ export const projects: ProjectProps[] = [
       />
     ),
     source: { backgroundSource: "logoshot.mp4", backgroundType: "video" },
-    tags: ["Mobile", "React Native", "Expo SDK"],
+    tags: ["Mobile", "React Native", "Expo SDK", "IOS Development"],
     title: "Logoshot",
   },
   {
@@ -81,11 +81,18 @@ export const projects: ProjectProps[] = [
       height: "75%",
       aspectRatio: `${ComebuyBackground.width} / ${ComebuyBackground.height}`,
     },
-    content: "Want to find a partner for badminton? Jöinee, go on a journey!",
+    content:
+      "Academia-Industry collaboration with COMEBUY, a Taiwanese beverage company! Let's beautify our data visualization and facilitate the routine workflows!",
     href: "https://come-buy.vercel.app/",
     source: { backgroundSource: ComebuyBackground, backgroundType: "image" },
     logo: <Image src={ComebuyLogo} alt="Comebuy logo" width={50} height={50} />,
-    tags: ["Web", "Typescript", "Vite", "Google Map API"],
-    title: "Comebuy",
+    tags: [
+      "Web",
+      "React",
+      "JavaScripts",
+      "Recharts.js",
+      "Recursive Components",
+    ],
+    title: "COMEBUY",
   },
 ];
