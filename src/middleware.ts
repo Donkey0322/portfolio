@@ -1,36 +1,20 @@
-import { track } from "@vercel/analytics/server";
 import { geolocation } from "@vercel/functions";
-import { format } from "date-fns";
-import { type NextRequest } from "next/server";
-import { toZonedTime } from "date-fns-tz";
-
-const formatTaiwanTime = (date: Date) => {
-  const timeZone = "Asia/Taipei";
-  const zonedDate = toZonedTime(date, timeZone);
-  return format(zonedDate, "yyyy/MM/dd HH:mm");
-};
+import { type NextRequest, NextResponse } from "next/server";
 
 export const config = {
   matcher: "/work",
 };
 
-export async function middleware(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const geo = geolocation(req);
   const { city = "", countryRegion = "", latitude = "", longitude = "" } = geo;
-  const userAgent = req.headers.get("user-agent");
+  const response = NextResponse.next();
 
-  if (
-    city &&
-    userAgent &&
-    !userAgent.includes("vercel") &&
-    req.method === "GET"
-  ) {
-    await track("view", {
-      city,
-      countryRegion,
-      latitude,
-      longitude,
-      time: formatTaiwanTime(new Date()),
-    });
-  }
+  // Set custom headers
+  response.headers.set("Analytics-City", city);
+  response.headers.set("Analytics-CountryRegion", countryRegion);
+  response.headers.set("Analytics-Latitude", latitude);
+  response.headers.set("Analytics-Longitude", longitude);
+
+  return response;
 }

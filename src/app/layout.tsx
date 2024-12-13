@@ -1,9 +1,10 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { Analytics } from "@vercel/analytics/next";
 import { Contrail_One, Poppins } from "next/font/google";
+import { headers } from "next/headers";
 
 import type { Metadata } from "next";
 
+import Analytics from "@/components/track/Analytics";
 import StyledComponentsRegistry from "@/libs/styled-components";
 import Intro from "@/modules/intro";
 import AntdProvider from "@/providers/antd/config";
@@ -34,11 +35,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const header = await headers();
+  const city = header.get("Analytics-City") ?? "";
+  const countryRegion = header.get("Analytics-CountryRegion") ?? "";
+  const latitude = header.get("Analytics-Latitude") ?? "";
+  const longitude = header.get("Analytics-Longitude") ?? "";
+
   return (
     <html lang="en">
       <body className={`${font.variable} ${poppins.variable}`}>
@@ -52,7 +59,7 @@ export default function RootLayout({
             </ThemeProvider>
           </AntdRegistry>
         </StyledComponentsRegistry>
-        <Analytics />
+        <Analytics geo={{ city, countryRegion, latitude, longitude }} />
       </body>
     </html>
   );
