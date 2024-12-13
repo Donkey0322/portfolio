@@ -13,7 +13,10 @@
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.2",
     "@vercel/analytics": "^1.4.1",
+    "@vercel/functions": "^1.5.1",
     "antd": "^5.22.2",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "next": "^15.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

@@ -108,12 +108,13 @@ const FigureContainer = styled.div`
   }
 `;
 
-const Figure = styled(Image)`
+const Figure = styled(Image)<{ $show: boolean }>`
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   animation: float 6s infinite ease-in-out;
+  visibility: ${({ $show }) => ($show ? "visible" : "hidden")};
 
   @keyframes float {
     0% {
@@ -213,21 +214,20 @@ export default function Intro() {
           </SubTitle>
         </TextContainer>
         <FigureContainer>
-          {hover ? (
-            <Figure
-              src={Me2}
-              alt={"me"}
-              height={350}
-              onMouseLeave={() => setHover(false)}
-            />
-          ) : (
-            <Figure
-              src={Me}
-              alt={"me"}
-              height={300}
-              onMouseEnter={() => setHover(true)}
-            />
-          )}
+          <Figure
+            src={Me2}
+            alt={"me"}
+            height={330}
+            onMouseLeave={() => setHover(false)}
+            $show={hover}
+          />
+          <Figure
+            src={Me}
+            alt={"me"}
+            height={300}
+            onMouseEnter={() => setHover(true)}
+            $show={!hover}
+          />
           <Image src={Background} alt={"background"} width={300} />
         </FigureContainer>
       </ContentContainer>
