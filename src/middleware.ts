@@ -17,8 +17,9 @@ export const config = {
 export async function middleware(req: NextRequest) {
   const geo = geolocation(req);
   const { city = "", countryRegion = "", latitude = "", longitude = "" } = geo;
+  const userAgent = req.headers.get("user-agent");
 
-  if (city) {
+  if (city && userAgent) {
     await track("view", {
       city,
       countryRegion,
