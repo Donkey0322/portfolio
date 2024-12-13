@@ -19,7 +19,12 @@ export async function middleware(req: NextRequest) {
   const { city = "", countryRegion = "", latitude = "", longitude = "" } = geo;
   const userAgent = req.headers.get("user-agent");
 
-  if (city && userAgent) {
+  if (
+    city &&
+    userAgent &&
+    !userAgent.includes("vercel") &&
+    req.method === "GET"
+  ) {
     await track("view", {
       city,
       countryRegion,
