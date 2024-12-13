@@ -1,14 +1,15 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { Analytics } from "@vercel/analytics/next";
 import { Contrail_One, Poppins } from "next/font/google";
 import { headers } from "next/headers";
 
 import type { Metadata } from "next";
 
-import Analytics from "@/components/track/Analytics";
 import StyledComponentsRegistry from "@/libs/styled-components";
 import Intro from "@/modules/intro";
 import AntdProvider from "@/providers/antd/config";
 import ThemeProvider from "@/providers/theme";
+import { tracking } from "@/utils/route";
 
 import "@/app/globals.css";
 
@@ -45,7 +46,18 @@ export default async function RootLayout({
   const countryRegion = header.get("Analytics-CountryRegion") ?? "";
   const latitude = header.get("Analytics-Latitude") ?? "";
   const longitude = header.get("Analytics-Longitude") ?? "";
+  const time = header.get("Analytics-Time") ?? "";
+  const host = header.get("host") ?? "";
 
+  if (host === "www.donkeylee.com" && city) {
+    await tracking({
+      city,
+      countryRegion,
+      latitude,
+      longitude,
+      time,
+    });
+  }
   return (
     <html lang="en">
       <body className={`${font.variable} ${poppins.variable}`}>
@@ -59,7 +71,7 @@ export default async function RootLayout({
             </ThemeProvider>
           </AntdRegistry>
         </StyledComponentsRegistry>
-        <Analytics geo={{ city, countryRegion, latitude, longitude }} />
+        <Analytics />
       </body>
     </html>
   );
