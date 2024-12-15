@@ -9,10 +9,26 @@ on:
 jobs:
   Create-Release-PR:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Check for existing PR
+        id: check_existing_pr
+        run: |
+          existing_pr=$(gh pr list --base master --head develop --state open --json number --jq '.[0].number')
+          if [ -z "$existing_pr" ]; then
+            echo "No existing PR found."
+            echo "::set-output name=pr_number::"
+          else
+            echo "Found existing PR #$existing_pr"
+            echo "::set-output name=pr_number::$existing_pr"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: Get latest PR on master
         id: get_latest_pr
@@ -20,6 +36,8 @@ jobs:
           latest_pr=$(gh pr list --base master --state closed --json title --jq '.[] | select(.title | startswith("release(*):")) | .title' | head -n 1)
           echo "Latest PR title: $latest_pr"
           echo "::set-output name=latest_pr::$latest_pr"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: Determine next version
         id: determine_version
@@ -37,10 +55,22 @@ jobs:
           echo "Next version: $next_version"
           echo "::set-output name=next_version::$next_version"
 
-      - name: Create Pull Request
+      - name: Update Existing PR or Create New
         run: |
-          gh pr create \
-            --base master \
-            --head develop \
-            --title "release(*): ${{ steps.determine_version.outputs.next_version }}" \
-            --body "Automated PR to release version ${{ steps.determine_version.outputs.next_version }}."
+          if [ -n "${{ steps.check_existing_pr.outputs.pr_number }}" ]; then
+            # Update existing PR
+            gh pr edit ${{ steps.check_existing_pr.outputs.pr_number }} \
+              --title "release(*): ${{ steps.determine_version.outputs.next_version }}" \
+              --body "Automated PR updated to release version ${{ steps.determine_version.outputs.next_version }}."
+            echo "Updated PR #${{ steps.check_existing_pr.outputs.pr_number }}"
+          else
+            # Create new PR
+            gh pr create \
+              --base master \
+              --head develop \
+              --title "release(*): ${{ steps.determine_version.outputs.next_version }}" \
+              --body "Automated PR to release version ${{ steps.determine_version.outputs.next_version }}."
+            echo "Created new PR."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
