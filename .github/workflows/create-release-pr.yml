@@ -1,0 +1,46 @@
+name: Automate Release PR
+
+on:
+  workflow_dispatch: # Allows manual triggering of the workflow
+  push:
+    branches:
+      - develop
+
+jobs:
+  Create-Release-PR:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get latest PR on master
+        id: get_latest_pr
+        run: |
+          latest_pr=$(gh pr list --base master --state closed --json title --jq '.[] | select(.title | startswith("release(*):")) | .title' | head -n 1)
+          echo "Latest PR title: $latest_pr"
+          echo "::set-output name=latest_pr::$latest_pr"
+
+      - name: Determine next version
+        id: determine_version
+        run: |
+          if [[ "${{ steps.get_latest_pr.outputs.latest_pr }}" =~ release\(\*\):[[:space:]]([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+            major="${BASH_REMATCH[1]}"
+            minor="${BASH_REMATCH[2]}"
+            patch="${BASH_REMATCH[3]}"
+            next_patch=$((patch + 1))
+            next_version="$major.$minor.$next_patch"
+          else
+            echo "No valid release PR found, defaulting to 1.0.0."
+            next_version="1.0.0"
+          fi
+          echo "Next version: $next_version"
+          echo "::set-output name=next_version::$next_version"
+
+      - name: Create Pull Request
+        run: |
+          gh pr create \
+            --base master \
+            --head develop \
+            --title "release(*): ${{ steps.determine_version.outputs.next_version }}" \
+            --body "Automated PR to release version ${{ steps.determine_version.outputs.next_version }}."
