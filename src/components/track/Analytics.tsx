@@ -18,8 +18,7 @@ export default function Analytics({ host, city, ...geo }: RequestGeoLocation) {
   const handleBeforeSend: BeforeSend = (event) => {
     if (event.type === "pageview") {
       if (host === "www.donkeylee.com" && city) {
-        console.log("Hi");
-        track("view_test", { city, ...geo });
+        track(city, geo);
       }
     }
     return event;
