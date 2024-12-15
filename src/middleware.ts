@@ -1,7 +1,9 @@
 import { geolocation } from "@vercel/functions";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+
+import type { NextRequest } from "next/server";
 
 export const config = {
   matcher: "/work",
@@ -15,11 +17,18 @@ const formatTaiwanTime = (date: Date) => {
 
 export function middleware(req: NextRequest) {
   const geo = geolocation(req);
-  const { city = "", countryRegion = "", latitude = "", longitude = "" } = geo;
+  const {
+    city = "",
+    countryRegion = "",
+    latitude = "",
+    longitude = "",
+    flag = "",
+  } = geo;
   const response = NextResponse.next();
 
   // Set custom headers
   response.headers.set("Analytics-City", city);
+  response.headers.set("Analytics-Flag", flag);
   response.headers.set("Analytics-CountryRegion", countryRegion);
   response.headers.set("Analytics-Latitude", latitude);
   response.headers.set("Analytics-Longitude", longitude);
