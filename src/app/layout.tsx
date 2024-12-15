@@ -1,4 +1,5 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { trim } from "lodash";
 import { Contrail_One, Poppins } from "next/font/google";
 import { headers } from "next/headers";
 
@@ -42,6 +43,7 @@ export default async function RootLayout({
 }>) {
   const header = await headers();
   const city = header.get("Analytics-City") ?? "";
+  const flag = header.get("Analytics-Flag") ?? "";
   const countryRegion = header.get("Analytics-CountryRegion") ?? "";
   const latitude = header.get("Analytics-Latitude") ?? "";
   const longitude = header.get("Analytics-Longitude") ?? "";
@@ -62,7 +64,7 @@ export default async function RootLayout({
           </AntdRegistry>
         </StyledComponentsRegistry>
         <Analytics
-          city={city}
+          city={trim(`${flag} ${city}`)}
           countryRegion={countryRegion}
           latitude={latitude}
           longitude={longitude}
