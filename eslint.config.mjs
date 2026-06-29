@@ -1,6 +1,7 @@
 import noRelativeImportPaths from "eslint-plugin-no-relative-import-paths";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import tsParser from "@typescript-eslint/parser";
+import nextPlugin from "@next/eslint-plugin-next";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
@@ -16,7 +17,17 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ["*", "!src"],
+    // Lint application code only — ignore generated, test, and tooling files.
+    ignores: [
+      "*",
+      "!src",
+      ".next/**",
+      "node_modules/**",
+      "tests/**",
+      "e2e/**",
+      "playwright-report/**",
+      "test-results/**",
+    ],
   },
   ...compat.extends(
     "plugin:@typescript-eslint/recommended-type-checked",
@@ -28,6 +39,7 @@ export default [
     plugins: {
       "no-relative-import-paths": noRelativeImportPaths,
       "simple-import-sort": simpleImportSort,
+      "@next/next": nextPlugin,
     },
 
     languageOptions: {

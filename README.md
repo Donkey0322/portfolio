@@ -1,36 +1,134 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Donkey Lee · Portfolio (`donkeylee.com`)
 
-## Getting Started
+A calm, koi-pond-themed personal portfolio for Yun-Chen (Donkey) Lee.
+Built with **Next.js 15 App Router**, **Tailwind CSS v4**, **Framer Motion**,
+and a small client-only **React Three Fiber** koi-pond hero.
 
-First, run the development server:
+The redesign is intentionally **SSR-first**: only the things that have to be
+client (the koi pond canvas, scroll-reveals, the season switcher, the PDF
+viewer) are client components. Everything else — About, Experience, Projects,
+nav skeleton, footer, metadata — is rendered on the server for great SEO and
+fast initial paint.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## Project layout
+
+```
+src/
+├── app/
+│   ├── layout.tsx          # Root layout: fonts, season-boot script, providers, analytics
+│   ├── page.tsx            # SSR home (Hero is the only client island)
+│   ├── globals.css         # Tailwind v4 + season palette CSS variables
+│   └── resume/page.tsx     # SSR résumé page; viewer isolated in a client wrapper
+│
+├── components/
+│   ├── animations/         # Reveal, YinYangKoi (small client islands)
+│   ├── icons/              # In-house SVG icon set (currentColor)
+│   ├── nav/                # SiteNav, SiteFooter, SeasonSwitcher
+│   ├── pond/               # KoiPondHero + KoiPondScene (R3F) + HeroFallback (SVG)
+│   ├── resume/             # ClientResume + ResumeViewer (react-pdf)
+│   ├── sections/           # About, Experience, Projects, ProjectCard (server)
+│   └── track/              # Vercel Analytics wiring
+│
+├── lib/
+│   ├── season/             # Season type, palette tokens, SSR-safe boot script
+│   └── site/               # Profile / experience / projects content
+│
+├── providers/season/       # React context for the season palette
+├── utils/                  # cn() helper, shared TS types
+└── middleware.ts           # Geo headers for tracked routes
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```
+tests/unit/                 # Vitest + React Testing Library component tests
+e2e/                        # Playwright user-flow tests
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Tech choices
 
-## Learn More
+| Concern       | Choice                                  | Why                                                                                              |
+| ------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Framework     | Next.js 15.5 App Router                 | RSC-first, fast image / font primitives, official React 19 support                              |
+| React         | React 19                                | Required by `@react-three/fiber@9` — older R3F v8 ships `react-reconciler@0.27` which trips `ReactCurrentOwner` undefined on React 18.3+ |
+| Styling       | **Tailwind v4** + CSS variables         | Replaced `styled-components` — better SSR, no FOUC, smaller runtime                              |
+| UI primitives | **Custom Tailwind components**          | Replaced **Ant Design** — heavy for a 3-section portfolio                                        |
+| 3D            | `@react-three/fiber` 9 + `three` 0.184  | Compatible with React 19 reconciler                                                              |
+| Animation     | Framer Motion                           | Scroll reveals + scroll-linked yin-yang transition                                               |
+| Tests         | Vitest + RTL, Playwright                | Unit + e2e smoke coverage for key flows                                                          |
+| Analytics     | `@vercel/analytics`                     | Same as before, wired through middleware geo headers                                             |
 
-To learn more about Next.js, take a look at the following resources:
+The **season palette** is implemented as four CSS variable sets selected by
+`<html data-season="…">`. A small `beforeInteractive` script reads the user's
+saved season from `localStorage` and sets the attribute *before* paint, so we
+never get a palette flash on first load.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The **koi pond hero** is `dynamic(() => …, { ssr: false })`. It is only
+mounted when:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- `prefers-reduced-motion` is **off**
+- viewport ≥ 768px
+- WebGL is available
+- the browser is idle (uses `requestIdleCallback` when available)
 
-## Deploy on Vercel
+Otherwise the page falls back to a JS-free SVG version of the same scene.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Getting started
+
+```bash
+pnpm install
+pnpm dev                  # http://localhost:3000
+```
+
+### Build / start
+
+```bash
+pnpm build
+pnpm start
+```
+
+### Tests
+
+```bash
+pnpm test                 # Vitest unit tests (jsdom)
+pnpm test:watch           # Vitest in watch mode
+pnpm test:e2e:install     # one-time: install Playwright browsers
+pnpm test:e2e             # Playwright (auto-starts dev server on :3000)
+```
+
+E2E tests cover:
+
+1. Hero renders, "Wander in" CTA scrolls to `#about`, all 3 project cards show
+2. Season switcher persists the chosen palette across reloads
+3. `/resume` page renders with a download button
+
+Unit tests cover:
+
+- `<SeasonSwitcher />` — radios, persistence, html attribute
+- `<ProjectCard />` — content, featured badge, conditional links
+- `<About />` — bio, education, contact links, downloadable résumé
+
+### Linting
+
+```bash
+pnpm lint                 # next lint . --ext ts,tsx --max-warnings 0 --fix
+```
+
+---
+
+## Content
+
+All editable content (bio, summary, education, experience entries,
+project descriptions) lives in [`src/lib/site/profile.ts`](src/lib/site/profile.ts).
+Edit there — the home page rebuilds itself.
+
+---
+
+## Deployment
+
+Deployed on Vercel. The `vercel.json` and `.vercel/` folders are tracked.
+Ensure environment variables, if any, are configured in the Vercel dashboard.

@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export const config = {
-  matcher: "/work",
+  matcher: ["/", "/resume"],
 };
 
 const formatTaiwanTime = (date: Date) => {
