@@ -14,6 +14,11 @@ interface RequestGeoLocation {
   host: string;
 }
 
+/**
+ * Vercel Analytics wrapper. We piggyback on the geolocation headers the
+ * middleware adds to known marketing routes and emit a custom event when
+ * the page is viewed on the production domain.
+ */
 export default function Analytics({ host, city, ...geo }: RequestGeoLocation) {
   const handleBeforeSend: BeforeSend = (event) => {
     if (event.type === "pageview") {
