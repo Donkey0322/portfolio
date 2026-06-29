@@ -36,12 +36,19 @@ export default function ProjectCard({ project, artwork, className }: Props) {
           </div>
         )}
 
-        {featured && (
-          <div className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-koi/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-koi">
-            <SparkleIcon />
-            Featured
-          </div>
-        )}
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          {featured && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-koi/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-koi">
+              <SparkleIcon />
+              Featured
+            </span>
+          )}
+          {project.status && (
+            <span className="inline-flex items-center rounded-full bg-pond-100 px-2.5 py-1 text-[11px] font-medium text-pond-800">
+              {project.status}
+            </span>
+          )}
+        </div>
 
         <h3 className="font-display text-2xl text-ink md:text-3xl">
           {project.title}

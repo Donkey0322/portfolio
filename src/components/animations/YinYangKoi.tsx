@@ -9,13 +9,16 @@ import {
 import { useRef } from "react";
 
 /**
- * Two stylized koi swim from top-left and bottom-right and rotate around the
- * center like a yin-yang pair as the user scrolls from the hero into the
- * About section. Pure SVG so it stays cheap and accessible.
+ * Scroll-linked yin-yang koi transition. Two stylized koi swim in from the
+ * top-left and bottom-right, orbit the center like the yin-yang fish, then
+ * spiral inward to a closed ring before the About section is revealed.
  *
- * Drives all motion off `useScroll({ target })` so the transition is tied to
- * scroll position, not a timer — which makes it feel deliberate rather than
- * autoplay-y.
+ * Implementation notes:
+ *  - All motion is driven by `useScroll({ target })` so the transition is
+ *    tied to scroll position, not a timer. Feels intentional rather than
+ *    autoplay-y.
+ *  - Pure SVG koi shapes so the component stays cheap and accessible.
+ *  - Honors `prefers-reduced-motion` by collapsing to a small empty spacer.
  */
 export default function YinYangKoi() {
   const reduceMotion = useReducedMotion();
@@ -25,22 +28,28 @@ export default function YinYangKoi() {
     offset: ["start end", "end start"],
   });
 
-  // Path: enter from corners, swirl into a tighter circle in the middle,
-  // then drift further apart again. Two koi mirror each other.
-  const rotation = useTransform(scrollYProgress, [0, 1], [0, 360]);
-  const radius = useTransform(scrollYProgress, [0, 0.5, 1], [180, 60, 180]);
+  // Two koi swing around a shared center. The ring tightens as the user
+  // scrolls past the midpoint, then the whole transition fades out before
+  // the About card enters.
+  const rotation = useTransform(scrollYProgress, [0, 1], [-90, 320]);
+  const radius = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    [220, 80, 12]
+  );
   const opacity = useTransform(
     scrollYProgress,
-    [0, 0.1, 0.85, 1],
+    [0, 0.08, 0.78, 1],
     [0, 1, 1, 0]
   );
+  const ringScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.6, 1, 1.2]);
 
   if (reduceMotion) {
     return (
       <div
         ref={ref}
         aria-hidden="true"
-        className="pointer-events-none relative h-12 w-full"
+        className="pointer-events-none relative h-10 w-full"
       />
     );
   }
@@ -49,33 +58,34 @@ export default function YinYangKoi() {
     <div
       ref={ref}
       aria-hidden="true"
-      className="pointer-events-none relative h-72 w-full overflow-hidden md:h-80"
+      className="pointer-events-none relative h-80 w-full overflow-hidden md:h-96"
     >
-      {/* Decorative ripple ring in the middle */}
+      {/* Concentric ripple rings that tighten as the koi close in */}
       <motion.div
-        style={{ opacity }}
+        style={{ opacity, scale: ringScale }}
         className="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full border border-pond-300/40"
       />
       <motion.div
-        style={{ opacity }}
-        className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border border-pond-300/20"
+        style={{ opacity, scale: ringScale }}
+        className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border border-pond-300/25"
+      />
+      <motion.div
+        style={{ opacity, scale: ringScale }}
+        className="absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-pond-300/15"
       />
 
+      {/* The rotating pair. Each koi is offset by 180° from the other. */}
       <motion.div
         style={{ rotate: rotation, opacity }}
         className="absolute left-1/2 top-1/2 h-px w-px"
       >
-        <KoiSvg
-          x={0}
-          y={0}
+        <KoiOrbit
           radius={radius}
           angleDeg={0}
           color="var(--koi)"
           accent="var(--canvas-soft)"
         />
-        <KoiSvg
-          x={0}
-          y={0}
+        <KoiOrbit
           radius={radius}
           angleDeg={180}
           color="var(--canvas-soft)"
@@ -86,46 +96,46 @@ export default function YinYangKoi() {
   );
 }
 
-function KoiSvg({
+function KoiOrbit({
   radius,
   angleDeg,
   color,
   accent,
 }: {
-  x: number;
-  y: number;
   radius: ReturnType<typeof useTransform<number, number>>;
   angleDeg: number;
   color: string;
   accent: string;
 }) {
-  // Position fish on the orbit by translating along radius then rotating.
   return (
     <motion.div
-      style={{
-        rotate: angleDeg,
-      }}
+      style={{ rotate: angleDeg }}
       className="absolute left-0 top-0"
     >
       <motion.div style={{ x: radius }} className="absolute left-0 top-0">
         <motion.svg
-          width={56}
-          height={28}
-          viewBox="0 0 56 28"
+          width={68}
+          height={32}
+          viewBox="0 0 68 32"
           className="-translate-x-1/2 -translate-y-1/2"
           animate={{ y: [0, -2, 0] }}
           transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+          aria-hidden="true"
         >
-          <ellipse cx="28" cy="14" rx="20" ry="7" fill={color} />
+          {/* Body */}
+          <ellipse cx="34" cy="16" rx="24" ry="8" fill={color} />
+          {/* Tail */}
           <path
-            d="M5 14 Q 0 8 -4 14 Q 0 20 5 14 Z"
+            d="M9 16 Q 2 8 -3 14 Q 0 18 -2 22 Q 4 22 9 16 Z"
             fill={color}
-            opacity={0.8}
+            opacity="0.8"
           />
-          <circle cx="38" cy="11" r="2.2" fill={accent} />
-          <circle cx="32" cy="15" r="2.6" fill={accent} />
-          <circle cx="26" cy="12" r="2.2" fill={accent} />
-          <circle cx="42" cy="13" r="1.4" fill="var(--ink)" />
+          {/* Accent koi spots */}
+          <ellipse cx="46" cy="13" rx="3" ry="2" fill={accent} />
+          <ellipse cx="38" cy="17" rx="3.4" ry="2.4" fill={accent} />
+          <ellipse cx="30" cy="14" rx="2.8" ry="2" fill={accent} />
+          {/* Eye */}
+          <circle cx="52" cy="15" r="1.6" fill="var(--ink)" />
         </motion.svg>
       </motion.div>
     </motion.div>

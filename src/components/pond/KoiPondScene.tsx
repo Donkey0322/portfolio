@@ -7,8 +7,6 @@ import * as THREE from "three";
 import {
   createKoiBodyGeometry,
   createKoiTailGeometry,
-  createLotusBlossomGeometry,
-  createLotusPadGeometry,
   makeKoiPath,
 } from "@/components/pond/koi";
 import { type Season,SEASON_SCENE } from "@/lib/season/types";
@@ -29,10 +27,11 @@ export default function KoiPondScene({ season }: SceneProps) {
     <Canvas
       shadows={false}
       dpr={[1, 1.6]}
-      camera={{ position: [0, 4.5, 0.8], fov: 35, near: 0.1, far: 50 }}
+      camera={{ position: [0, 3.4, 0.6], fov: 38, near: 0.1, far: 50 }}
       gl={{
         antialias: true,
         alpha: true,
+        premultipliedAlpha: false,
         powerPreference: "high-performance",
       }}
       style={{ position: "absolute", inset: 0 }}
@@ -50,26 +49,27 @@ function SceneContents({ season }: SceneProps) {
     camera.lookAt(0, 0, 0);
   }, [camera]);
 
+  // Transparent clear so the painted SVG scenery underneath shows through.
+  // The pond water is now drawn by the SVG layer; this scene only adds
+  // koi, lotus highlights, and ripples on top.
   useEffect(() => {
     gl.setClearColor(new THREE.Color(palette.sky), 0);
   }, [gl, palette.sky]);
 
   return (
     <>
-      <ambientLight intensity={0.8} color={new THREE.Color(palette.sky)} />
+      <ambientLight intensity={0.75} color={new THREE.Color(palette.sky)} />
       <directionalLight
         position={[3, 6, 2]}
-        intensity={1.1}
+        intensity={1.05}
         color={new THREE.Color(palette.sky)}
       />
       <hemisphereLight
-        args={[new THREE.Color(palette.sky), new THREE.Color(palette.waterDeep), 0.6]}
+        args={[new THREE.Color(palette.sky), new THREE.Color(palette.waterDeep), 0.55]}
       />
 
       <Water palette={palette} />
-      <LotusCluster palette={palette} />
       <KoiSchool palette={palette} />
-      <PondVignette palette={palette} />
     </>
   );
 }
@@ -87,32 +87,30 @@ function SceneContents({ season }: SceneProps) {
 function Water({ palette }: { palette: (typeof SEASON_SCENE)[Season] }) {
   const groupRef = useRef<THREE.Group>(null);
 
+  // The texture is now a *transparent* caustics overlay that floats on
+  // top of the painted SVG pond beneath the canvas. We no longer fill
+  // the surface with a solid water color — that would obscure the
+  // painterly background. Only specular streaks + a faint wash remain.
   const waterTexture = useMemo(() => {
     const canvas = document.createElement("canvas");
     canvas.width = 512;
     canvas.height = 512;
     const ctx = canvas.getContext("2d")!;
-    const gradient = ctx.createRadialGradient(
-      256,
-      256,
-      40,
-      256,
-      256,
-      300
-    );
-    gradient.addColorStop(0, palette.water);
-    gradient.addColorStop(1, palette.waterDeep);
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 512, 512);
 
-    // Soft caustic streaks
+    // A very faint tint so the canvas isn't a hard cut-out — picks up
+    // some of the water color so the koi feel "in" the pond.
+    ctx.fillStyle = palette.water;
+    ctx.globalAlpha = 0.18;
+    ctx.fillRect(0, 0, 512, 512);
+    ctx.globalAlpha = 1;
+
     ctx.globalCompositeOperation = "lighter";
-    ctx.strokeStyle = "rgba(255,255,255,0.06)";
-    ctx.lineWidth = 1.5;
-    for (let i = 0; i < 60; i += 1) {
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.lineWidth = 1.4;
+    for (let i = 0; i < 70; i += 1) {
       const x1 = Math.random() * 512;
       const y1 = Math.random() * 512;
-      const x2 = x1 + (Math.random() - 0.5) * 220;
+      const x2 = x1 + (Math.random() - 0.5) * 240;
       const y2 = y1 + (Math.random() - 0.5) * 80;
       ctx.beginPath();
       ctx.moveTo(x1, y1);
@@ -131,7 +129,7 @@ function Water({ palette }: { palette: (typeof SEASON_SCENE)[Season] }) {
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
     tex.anisotropy = 4;
     return tex;
-  }, [palette.water, palette.waterDeep]);
+  }, [palette.water]);
 
   useEffect(
     () => () => {
@@ -265,80 +263,8 @@ function Water({ palette }: { palette: (typeof SEASON_SCENE)[Season] }) {
     <group ref={groupRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[16, 16, 1, 1]} />
-        <meshBasicMaterial map={waterTexture} />
+        <meshBasicMaterial map={waterTexture} transparent />
       </mesh>
-      {/* Subtle inner darker rim */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]}>
-        <ringGeometry args={[3.2, 4.5, 64]} />
-        <meshBasicMaterial
-          color={new THREE.Color(palette.waterDeep)}
-          transparent
-          opacity={0.18}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-function LotusCluster({
-  palette,
-}: {
-  palette: (typeof SEASON_SCENE)[Season];
-}) {
-  const padGeo = useMemo(() => createLotusPadGeometry(0.55), []);
-  const blossomGeo = useMemo(() => createLotusBlossomGeometry(), []);
-
-  useEffect(
-    () => () => {
-      padGeo.dispose();
-      blossomGeo.dispose();
-    },
-    [padGeo, blossomGeo]
-  );
-
-  // Hand-placed lotus positions for an asymmetric, painterly arrangement.
-  const layout: { x: number; z: number; rot: number; scale: number; bloom: boolean }[] = [
-    { x: -1.9, z: -1.4, rot: 0.3, scale: 1.1, bloom: true },
-    { x: -2.4, z: 0.6, rot: -0.4, scale: 0.9, bloom: false },
-    { x: 1.6, z: -1.7, rot: 0.8, scale: 1.0, bloom: false },
-    { x: 2.2, z: 1.0, rot: -1.1, scale: 1.2, bloom: true },
-    { x: 0.4, z: 2.1, rot: 0.4, scale: 0.85, bloom: false },
-    { x: -0.6, z: -2.4, rot: -0.6, scale: 0.95, bloom: false },
-  ];
-
-  return (
-    <group>
-      {layout.map((p, i) => (
-        <group key={i} position={[p.x, 0.012, p.z]} rotation={[0, p.rot, 0]}>
-          <mesh geometry={padGeo} scale={p.scale}>
-            <meshStandardMaterial
-              color={new THREE.Color(palette.leaf)}
-              roughness={0.85}
-              metalness={0}
-            />
-          </mesh>
-          {p.bloom && (
-            <group position={[0, 0.04, 0]}>
-              <mesh geometry={blossomGeo}>
-                <meshStandardMaterial
-                  color={new THREE.Color(palette.lotus)}
-                  emissive={new THREE.Color(palette.lotus)}
-                  emissiveIntensity={0.15}
-                  roughness={0.6}
-                />
-              </mesh>
-              <mesh position={[0, 0.06, 0]}>
-                <sphereGeometry args={[0.05, 12, 8]} />
-                <meshStandardMaterial
-                  color={new THREE.Color(palette.koiA)}
-                  emissive={new THREE.Color(palette.koiA)}
-                  emissiveIntensity={0.1}
-                />
-              </mesh>
-            </group>
-          )}
-        </group>
-      ))}
     </group>
   );
 }
@@ -472,26 +398,3 @@ function Koi({
     </group>
   );
 }
-
-/**
- * A soft radial vignette ring at the edges so the canvas fades into
- * the surrounding page rather than ending in a hard rectangle.
- */
-function PondVignette({
-  palette,
-}: {
-  palette: (typeof SEASON_SCENE)[Season];
-}) {
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
-      <ringGeometry args={[5.5, 9, 64]} />
-      <meshBasicMaterial
-        color={new THREE.Color(palette.sky)}
-        transparent
-        opacity={0.85}
-        side={THREE.DoubleSide}
-      />
-    </mesh>
-  );
-}
-

@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Tailwind v4 auto-detects sources from the entry CSS location, but in this
+ * project the entry lives at `src/app/globals.css` while components live at
+ * `src/components/`, `src/app/`, etc. Auto-detection in some environments
+ * skips those, leaving us with zero generated utilities. We list the
+ * directories explicitly so source scanning is deterministic. */
+@source "../**/*.{ts,tsx}";
+
 /* Tailwind v4 theme tokens that map to season-aware CSS variables.
  * Season-specific values are defined under [data-season="..."] selectors below. */
 @theme {
@@ -28,6 +35,10 @@
   --color-canvas: var(--canvas);
   --color-canvas-soft: var(--canvas-soft);
   --color-border-soft: var(--border-soft);
+
+  --color-parchment: var(--parchment);
+  --color-parchment-edge: var(--parchment-edge);
+  --color-lantern: var(--lantern);
 
   --shadow-water: 0 20px 60px -15px color-mix(in oklab, var(--pond-700) 35%, transparent);
   --shadow-stone: 0 10px 30px -10px color-mix(in oklab, var(--ink) 25%, transparent);
@@ -65,6 +76,10 @@
   --canvas: #f3fbf6;
   --canvas-soft: #ffffff;
   --border-soft: rgba(17, 43, 42, 0.08);
+
+  --parchment: #fff5e1;
+  --parchment-edge: #cdb98a;
+  --lantern: #ffb56a;
 }
 
 [data-season="spring"] {
@@ -90,6 +105,10 @@
   --canvas: #fff7fa;
   --canvas-soft: #ffffff;
   --border-soft: rgba(58, 31, 44, 0.08);
+
+  --parchment: #fff7ec;
+  --parchment-edge: #d9c19c;
+  --lantern: #ffb56a;
 }
 
 [data-season="autumn"] {
@@ -115,6 +134,10 @@
   --canvas: #fff5e8;
   --canvas-soft: #fffaf2;
   --border-soft: rgba(44, 22, 10, 0.1);
+
+  --parchment: #fff2dc;
+  --parchment-edge: #cca87a;
+  --lantern: #ff8a3a;
 }
 
 [data-season="winter"] {
@@ -140,6 +163,10 @@
   --canvas: #f6fafc;
   --canvas-soft: #ffffff;
   --border-soft: rgba(20, 32, 45, 0.08);
+
+  --parchment: #f8fbfd;
+  --parchment-edge: #b9c8d7;
+  --lantern: #ffd29a;
 }
 
 @layer base {

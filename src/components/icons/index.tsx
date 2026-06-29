@@ -113,3 +113,43 @@ export function CalendarIcon(props: Props) {
     </svg>
   );
 }
+
+export function BriefcaseIcon(props: Props) {
+  return (
+    <svg {...baseProps} {...props}>
+      <rect x="3" y="7" width="18" height="13" rx="2" />
+      <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18" />
+    </svg>
+  );
+}
+
+export function UserIcon(props: Props) {
+  return (
+    <svg {...baseProps} {...props}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+    </svg>
+  );
+}
+
+export function LotusIcon(props: Props) {
+  /**
+   * Stylized lotus petal cluster — used as the small badge above the
+   * hero parchment card. Each petal is a quadratic curve so the icon
+   * stays crisp when colored with `currentColor`.
+   */
+  return (
+    <svg
+      {...baseProps}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M12 13c-3 0-4-2-4-4 0-2 1.4-3.5 4-3.5s4 1.5 4 3.5c0 2-1 4-4 4Z" />
+      <path d="M12 13c-2.8 1-5.3.5-6.6-1-1.4-1.6-1-3.7.5-5 1.6-1.3 3.6-1 5.1.7.9 1 1.4 2.6 1 5.3Z" />
+      <path d="M12 13c2.8 1 5.3.5 6.6-1 1.4-1.6 1-3.7-.5-5-1.6-1.3-3.6-1-5.1.7-.9 1-1.4 2.6-1 5.3Z" />
+      <path d="M6 14c2 2.5 4 3.5 6 3.5s4-1 6-3.5" />
+    </svg>
+  );
+}

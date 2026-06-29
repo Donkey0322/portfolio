@@ -69,21 +69,24 @@ export interface KoiPath {
 }
 
 export function makeKoiPath(seed: number): KoiPath {
-  // Gentle elliptical loops with phase + size jitter so each koi feels unique.
-  const a = 2.4 + (seed * 0.37) % 1.2;
-  const b = 1.6 + (seed * 0.51) % 0.8;
+  // Wide-but-shallow elliptical loops sized to the camera's visible band.
+  // The hero canvas is constrained to roughly a `width >> depth` strip
+  // because the painted foreground rocks crop the rest of the pond. We
+  // keep koi inside that strip so they're always on screen.
+  const a = 2.2 + ((seed * 0.37) % 0.8); // horizontal radius 2.2 - 3.0
+  const b = 0.9 + ((seed * 0.51) % 0.4); // depth radius 0.9 - 1.3
   const phase = (seed * 1.31) % (Math.PI * 2);
-  const cx = (Math.cos(seed * 2.1) * 0.6) - 0.1;
-  const cy = (Math.sin(seed * 1.7) * 0.4) + 0.05;
+  const cx = Math.cos(seed * 2.1) * 0.4 - 0.1;
+  const cy = Math.sin(seed * 1.7) * 0.25 + 0.1;
 
   return {
-    duration: 16 + ((seed * 3.7) % 8),
+    duration: 14 + ((seed * 3.7) % 6),
     sample(t: number) {
       const angle = t * Math.PI * 2 + phase;
-      const x = cx + Math.cos(angle) * a + Math.cos(angle * 2) * 0.15;
-      const y = cy + Math.sin(angle) * b + Math.sin(angle * 3) * 0.08;
-      const tx = -Math.sin(angle) * a - Math.sin(angle * 2) * 0.3;
-      const ty = Math.cos(angle) * b + Math.cos(angle * 3) * 0.24;
+      const x = cx + Math.cos(angle) * a + Math.cos(angle * 2) * 0.12;
+      const y = cy + Math.sin(angle) * b + Math.sin(angle * 3) * 0.06;
+      const tx = -Math.sin(angle) * a - Math.sin(angle * 2) * 0.24;
+      const ty = Math.cos(angle) * b + Math.cos(angle * 3) * 0.18;
       const tangent = new THREE.Vector2(tx, ty).normalize();
       return { position: new THREE.Vector2(x, y), tangent };
     },

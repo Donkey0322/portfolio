@@ -75,11 +75,13 @@ export default function Projects() {
             id="projects-heading"
             className="mt-3 font-display text-4xl text-ink md:text-5xl"
           >
-            Three things I&apos;ve been building.
+            Three projects worth a closer look.
           </h2>
           <p className="mt-3 max-w-xl text-ink-soft">
-            A featured WebGL playground, an LLM-powered job radar, and a
-            calmer notes idea I&apos;m shaping in the open.
+            A WebGL playground (you&apos;re standing in it), an open-source
+            AI-powered job radar shipping ATS crawls + LLM filtering on a
+            free GitHub Actions cron, and a calmer notes idea I&apos;m
+            shaping in the open.
           </p>
         </Reveal>
 

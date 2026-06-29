@@ -49,15 +49,16 @@ e2e/                        # Playwright user-flow tests
 
 ## Tech choices
 
-| Concern             | Choice                                | Why                                                                 |
-| ------------------- | ------------------------------------- | ------------------------------------------------------------------- |
-| Framework           | Next.js 15 App Router                 | RSC-first, fast image / font primitives                             |
-| Styling             | **Tailwind v4** + CSS variables       | Replaced `styled-components` — better SSR, no FOUC, smaller runtime |
-| UI primitives       | **Custom Tailwind components**        | Replaced **Ant Design** — heavy for a 3-section portfolio           |
-| 3D                  | `@react-three/fiber` 8 + `three` 0.184 | Stays on React 18 (R3F v9 needs React 19)                          |
-| Animation           | Framer Motion                         | Scroll reveals + scroll-linked yin-yang transition                  |
-| Tests               | Vitest + RTL, Playwright              | Unit + e2e smoke coverage for key flows                             |
-| Analytics           | `@vercel/analytics`                   | Same as before, wired through middleware geo headers                |
+| Concern       | Choice                                  | Why                                                                                              |
+| ------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Framework     | Next.js 15.5 App Router                 | RSC-first, fast image / font primitives, official React 19 support                              |
+| React         | React 19                                | Required by `@react-three/fiber@9` — older R3F v8 ships `react-reconciler@0.27` which trips `ReactCurrentOwner` undefined on React 18.3+ |
+| Styling       | **Tailwind v4** + CSS variables         | Replaced `styled-components` — better SSR, no FOUC, smaller runtime                              |
+| UI primitives | **Custom Tailwind components**          | Replaced **Ant Design** — heavy for a 3-section portfolio                                        |
+| 3D            | `@react-three/fiber` 9 + `three` 0.184  | Compatible with React 19 reconciler                                                              |
+| Animation     | Framer Motion                           | Scroll reveals + scroll-linked yin-yang transition                                               |
+| Tests         | Vitest + RTL, Playwright                | Unit + e2e smoke coverage for key flows                                                          |
+| Analytics     | `@vercel/analytics`                     | Same as before, wired through middleware geo headers                                             |
 
 The **season palette** is implemented as four CSS variable sets selected by
 `<html data-season="…">`. A small `beforeInteractive` script reads the user's

@@ -3,6 +3,7 @@ import SiteFooter from "@/components/nav/SiteFooter";
 import SiteNav from "@/components/nav/SiteNav";
 import KoiPondHero from "@/components/pond/KoiPondHero";
 import About from "@/components/sections/About";
+import Contact from "@/components/sections/Contact";
 import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
 
@@ -15,10 +16,14 @@ import Projects from "@/components/sections/Projects";
  *                          dynamically imported client component, so the
  *                          page itself stays an RSC.
  *   3. <YinYangKoi>      — client transition between hero and About
- *   4. <About>           — server-rendered (intro card + photo + contact)
- *   5. <Experience>      — server-rendered (timeline cards)
- *   6. <Projects>        — server-rendered (3 project cards)
- *   7. <SiteFooter>      — server-rendered
+ *   4. <About>           — server-rendered (story, education, skills,
+ *                          portrait, contact)
+ *   5. <Experience>      — server-rendered (timeline cards, 5 internships)
+ *   6. <Projects>        — server-rendered (Graphics Town / JobRadar /
+ *                          Jovana)
+ *   7. <Contact>         — server-rendered (the CTA target for "Get in
+ *                          touch" from the hero card)
+ *   8. <SiteFooter>      — server-rendered
  *
  * Critically, only the small interactive islands are client components, so
  * SEO + LCP for the page content stays great.
@@ -33,6 +38,7 @@ export default function Home() {
         <About />
         <Experience />
         <Projects />
+        <Contact />
       </main>
       <SiteFooter />
     </>

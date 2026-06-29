@@ -38,11 +38,13 @@ export default function Experience() {
               id="experience-heading"
               className="mt-3 font-display text-4xl text-ink md:text-5xl"
             >
-              Stones I&apos;ve stepped on.
+              Stepping stones across the pond.
             </h2>
             <p className="mt-3 max-w-xl text-ink-soft">
-              A path of internships and projects, told as short stories instead
-              of resume bullet points.
+              Five internships from Taipei to Hsinchu — frontend platforms,
+              backend services, and most recently AI-assisted refactoring of
+              legacy Java test suites at TSMC. Told as short stories rather
+              than resume bullet dumps.
             </p>
           </Reveal>
           <Reveal delay={0.1}>
@@ -118,6 +120,12 @@ export default function Experience() {
                           item.company
                         )}
                       </p>
+
+                      {item.theme && (
+                        <p className="mt-3 font-display text-sm italic text-ink-soft">
+                          {item.theme}
+                        </p>
+                      )}
 
                       <ul className="mt-4 space-y-2 text-sm leading-relaxed text-ink-soft md:text-[0.95rem]">
                         {item.highlights.map((h, idx) => (
